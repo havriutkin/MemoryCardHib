@@ -1,4 +1,4 @@
-package org.havriutkin.memorycard2.servlet;
+package org.havriutkin.memorycard2.servlet.Auth;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

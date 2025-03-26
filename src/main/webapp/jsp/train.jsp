@@ -10,44 +10,47 @@
 <html>
     <head>
         <title>Training</title>
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/styles.css" />
     </head>
-    
+
     <body>
-        <h2>Training Mode</h2>
+        <div class="centered-page">
+            <div class="container" style="max-width: 500px;">
+                <h2>Training Mode</h2>
 
-        <% if (error != null) { %>
-            <p style="color:red;"><%= error %></p>
-        <% } else if (done != null && done) { %>
-            <p>You're done training!</p>
-            <a href="dashboard">Back to dashboard</a>
-        <% } else if (card != null) { %>
-            <div style="padding:1em; border:1px solid #ccc; margin-bottom:1em;">
-                <strong><%= card.getTitle() %></strong><br/>
+                <% if (error != null) { %>
+                <p class="error"><%= error %></p>
+                <% } else if (done != null && done) { %>
+                <p>You're done training!</p>
+                <a href="dashboard">Back to dashboard</a>
+                <% } else if (card != null) { %>
+                <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <strong><%= card.getTitle() %></strong><br/>
 
-                <%
-                    if (card instanceof TextCard) {
-                %>  <em><%= ((TextCard) card).getQuestion() %></em><br/>
-                <%
-                } else if (card instanceof ImageCard) {
-                %>  <img src="<%= ((ImageCard) card).getImageUrl() %>" width="250" alt="Image question"/><br/>
-                <%
-                } else if (card instanceof AudioCard) {
-                %>  <audio controls src="<%= ((AudioCard) card).getAudioUrl() %>"></audio><br/>
-                <%
-                    }
-                %>
-                <br/>
-                <details>
-                    <summary>Show Answer</summary>
-                    <p><%= card.getAnswer() %></p>
-                </details>
+                            <% if (card instanceof TextCard) { %>
+                            <em><%= ((TextCard) card).getQuestion() %></em>
+                            <% } else if (card instanceof ImageCard) { %>
+                            <img src="<%= ((ImageCard) card).getImageUrl() %>" alt="Image question" style="max-width:100%; border-radius: 8px;" />
+                            <% } else if (card instanceof AudioCard) { %>
+                            <audio controls src="<%= ((AudioCard) card).getAudioUrl() %>"></audio>
+                            <% } %>
+                        </div>
+
+                        <div class="flip-card-back">
+                            <strong>Answer:</strong>
+                            <p><%= card.getAnswer() %></p>
+                        </div>
+                    </div>
+                </div>
+
+                <form method="post" action="train" style="margin-top: 20px;">
+                    <input type="submit" value="Next Card"/>
+                </form>
+                <a href="dashboard">Back to dashboard</a>
+                <% } %>
             </div>
-
-            <form method="post" action="train">
-                <input type="submit" value="Next Card"/>
-            </form>
-
-            <a href="dashboard">Back to dashboard</a>
-        <% } %>
+        </div>
     </body>
 </html>

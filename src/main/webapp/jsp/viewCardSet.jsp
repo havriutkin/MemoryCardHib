@@ -10,43 +10,59 @@
 <html>
     <head>
         <title><%= cardSet.getName() %></title>
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/styles.css" />
     </head>
 
     <body>
-        <h2>Card Set: <%= cardSet.getName() %></h2>
+        <div class="view-container">
+            <div class="view-header">
+                <h2><%= cardSet.getName() %></h2>
+                <a href="createCard?cardSetId=<%= cardSet.getId() %>" class="new-card-set-btn">+ Add New Card</a>
+            </div>
 
-        <a href="createCard?cardSetId=<%= cardSet.getId() %>">+ Add New Card</a><br/><br/>
+            <div class="card-list">
+                <%
+                    if (cards != null && !cards.isEmpty()) {
+                        for (Card card : cards) {
+                %>
+                <div class="card-item">
+                    <div><strong>Title:</strong> <%= card.getTitle() %></div>
+                    <div><strong>Answer:</strong> <%= card.getAnswer() %></div>
 
-        <%
-            if (cards != null && !cards.isEmpty()) {
-                for (Card card : cards) {
-        %>
-            <div style="margin-bottom: 1em; padding: 0.5em; border: 1px solid #ccc;">
-                <strong>Title:</strong> <%= card.getTitle() %><br/>
-                <strong>Answer:</strong> <%= card.getAnswer() %><br/>
-    
+                    <%
+                        if (card instanceof TextCard) {
+                    %>
+                    <div><strong>Question:</strong> <%= ((TextCard) card).getQuestion() %></div>
+                    <%
+                    } else if (card instanceof ImageCard) {
+                    %>
+                    <div class="card-image">
+                        <img src="<%= ((ImageCard) card).getImageUrl() %>" alt="Image question" />
+                    </div>
+                    <%
+                    } else if (card instanceof AudioCard) {
+                    %>
+                    <div>
+                        <audio controls src="<%= ((AudioCard) card).getAudioUrl() %>"></audio>
+                    </div>
+                    <%
+                        }
+                    %>
+
+                    <div class="card-actions">
+                        <a href="editCard?id=<%= card.getId() %>">Edit</a>
+                        <a href="deleteCard?id=<%= card.getId() %>">Delete</a>
+                    </div>
+                </div>
                 <%
-                    if (card instanceof TextCard) {
-                %>      <strong>Question:</strong> <%= ((TextCard) card).getQuestion() %><br/>
-                <%
-                } else if (card instanceof ImageCard) {
-                %>      <img src="<%= ((ImageCard) card).getImageUrl() %>" width="200" alt="Image question"/><br/>
-                <%
-                } else if (card instanceof AudioCard) {
-                %>      <audio controls src="<%= ((AudioCard) card).getAudioUrl() %>"></audio><br/>
+                    }
+                } else {
+                %>
+                <p>No cards in this set yet.</p>
                 <%
                     }
                 %>
-                <a href="editCard?id=<%= card.getId() %>">Edit</a> |
-                <a href="deleteCard?id=<%= card.getId() %>">Delete</a>
             </div>
-        <%
-            }
-        } else {
-        %>
-            <p>No cards in this set yet.</p>
-        <%
-            }
-        %>
+        </div>
     </body>
 </html>

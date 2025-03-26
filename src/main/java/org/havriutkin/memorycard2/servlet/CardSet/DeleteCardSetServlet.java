@@ -1,16 +1,17 @@
-package org.havriutkin.memorycard2.servlet;
+package org.havriutkin.memorycard2.servlet.CardSet;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
-import org.havriutkin.memorycard2.dao.CardDAO;
-import org.havriutkin.memorycard2.model.*;
+import org.havriutkin.memorycard2.dao.CardSetDAO;
+import org.havriutkin.memorycard2.model.CardSet;
+import org.havriutkin.memorycard2.model.User;
 
 import java.io.IOException;
 
-@WebServlet("/deleteCard")
-public class DeleteCardServlet extends HttpServlet {
-    private final CardDAO cardDAO = new CardDAO();
+@WebServlet("/deleteCardSet")
+public class DeleteCardSetServlet extends HttpServlet {
+    private final CardSetDAO cardSetDAO = new CardSetDAO();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -24,16 +25,15 @@ public class DeleteCardServlet extends HttpServlet {
         }
 
         Long id = Long.parseLong(req.getParameter("id"));
-        Card card = cardDAO.findById(id);
+        CardSet cardSet = cardSetDAO.findById(id);
 
         // Ownership check
-        if (card == null || !card.getCardSet().getUser().getId().equals(user.getId())) {
+        if (cardSet == null || !cardSet.getUser().getId().equals(user.getId())) {
             resp.sendRedirect("dashboard");
             return;
         }
 
-        Long cardSetId = card.getCardSet().getId(); // store for redirect
-        cardDAO.delete(card);
-        resp.sendRedirect("viewCardSet?id=" + cardSetId);
+        cardSetDAO.delete(cardSet); // 🗑 Cascade deletes cards too
+        resp.sendRedirect("dashboard");
     }
 }
